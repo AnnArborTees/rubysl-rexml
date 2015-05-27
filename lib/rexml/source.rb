@@ -167,7 +167,9 @@ module REXML
       if encoding
         super("", encoding)
       else
-        super(@source.read(3) || "")
+        # ??????????? WTF?
+        # super(@source.read(3) || "")
+        super("")
       end
 
       if !@to_utf and

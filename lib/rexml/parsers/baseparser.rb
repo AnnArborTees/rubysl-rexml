@@ -203,6 +203,7 @@ module REXML
           word = @source.match( /^((?:\s+)|(?:<[^>]*>))/um )
           word = word[1] unless word.nil?
           #STDERR.puts "WORD = #{word.inspect}"
+
           case word
           when COMMENT_START
             return [ :comment, @source.match( COMMENT_PATTERN, true )[1] ]
@@ -337,9 +338,11 @@ module REXML
               last_tag = @tags.pop
               #md = @source.match_to_consume( '>', CLOSE_MATCH)
               md = @source.match( CLOSE_MATCH, true )
-              raise REXML::ParseException.new( "Missing end tag for "+
-                "'#{last_tag}' (got \"#{md[1]}\")",
-                @source) unless last_tag == md[1]
+
+              unless last_tag == md[1]
+                raise REXML::ParseException.new("Missing end tag for '#{last_tag}' (got \"#{md[1]}\")", @source)
+              end
+
               return [ :end_element, last_tag ]
             elsif @source.buffer[1] == ?!
               md = @source.match(/\A(\s*[^>]*>)/um)
